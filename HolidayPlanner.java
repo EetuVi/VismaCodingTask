@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class HolidayPlanner {
+    // Luodaan lista suomen vapaapäivistä ja alustetaan lista LocalDate-tyypin objekteille sekä
+    // formatter päivämäärien tyypin muuttamiseksi
     ArrayList<String> finnishHolidaysAsString = new ArrayList<>(Arrays.asList(
                                 "1.1.2021",
                                 "6.1.2021",
@@ -35,6 +37,7 @@ public class HolidayPlanner {
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("d.M.yyyy");
 
+    // Muutetaan String-tyypin päivämäärät LocalDate-muotoon heti constructorissa ja lisätään ne listaan
     public HolidayPlanner() {
         finnishHolidaysAsString.forEach((date) -> {
             try {
@@ -50,6 +53,8 @@ public class HolidayPlanner {
         LocalDate toDate = null;
         String error = null;
 
+        // Muutetaan annetut päivämäärät LocalDate-objekteiksi, jos tapahtuu virheitä tulostetaan virhesanoma konsoliin
+        // ja palautetaan null
         try {
             fromDate = LocalDate.parse(fromDateString, dateFormat);
             toDate = LocalDate.parse(toDateString, dateFormat);
@@ -58,13 +63,16 @@ public class HolidayPlanner {
             return null;
         }
 
+        // Validoidaan päivämäärät ja niiden aikaväli tehtävänannon mukaisin ehdoin.
+        // Jos virheitä havaitaan, tulostetaan virhesanoma konsoliin ja palautetaan null.
         error = validateDates(fromDate, toDate);
         if(error != null){
             System.out.println(error);
             return null;
         }
 
-        //Long days = ChronoUnit.DAYS.between(fromDate, toDate) + 1;
+        // Alustetaan tarvittavat lomapäivät nollaan ja lasketaan tarvittavien lomapäivien määrä aikavälille
+        // pois lukien sunnuntait
         int days = 0;
         for(LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)){
             if(date.getDayOfWeek() != DayOfWeek.SUNDAY) {
@@ -72,6 +80,8 @@ public class HolidayPlanner {
             }
         }
 
+        // Käydään läpi kansalliset vapaapäivät ja vähennetään tarvittavia lomapäiviä, jos vapaapäivä osuu halutulle
+        // loman aikavälille.
         for(LocalDate date : finnishHolidays){
             if((date.isAfter(fromDate) || date.isEqual(fromDate)) && (date.isBefore(toDate) || date.isEqual(toDate))){
                 days -= 1;
@@ -82,28 +92,36 @@ public class HolidayPlanner {
     }
 
     private String validateDates(LocalDate fromDate, LocalDate toDate){
+        // Alustetaan lomavuoden validit alku- ja loppupäivämäärät
         int year = fromDate.getYear();
         String validFromDateString = "1.4." + year;
         String validToDateString = "31.3." + (year + 1);
         LocalDate validFromDate = LocalDate.parse(validFromDateString, dateFormat);
         LocalDate validToDate = LocalDate.parse(validToDateString, dateFormat);
 
+        // Tarkistetaan, että loman alkupäivämäärä on ennen loppupäivämäärää
         if(fromDate.isAfter(toDate)){
             return "First date must be earlier than the second one.";
         }
 
+        // Tarkistetaan, että loma-ajan pituus ei ylita 50 päivää.
         if(ChronoUnit.DAYS.between(fromDate, toDate) > 50){
             return "Time period between the dates is too long, should be maximum of 50 days.";
         }
 
+        // Tarkistetaan, onko validi lomavuosi oikea. Loman alkupäivän sijoittuessa vuoden alkuun, säädetään lomavuotta
+        // vuodella taaksepäin.
         if(fromDate.isBefore(validFromDate)){
             validFromDate = validFromDate.minusYears(1);
             validToDate = validToDate.minusYears(1);
         }
-
-        if(!(fromDate.isAfter(validFromDate) && fromDate.isBefore(validToDate)) || !(toDate.isAfter(validFromDate) && toDate.isBefore(validToDate))){
+        // Tarkistetaan, että halutun loman alku- ja loppupäivämäärät osuvat saman lomavuoden sisälle.
+        if(!(fromDate.isAfter(validFromDate) && fromDate.isBefore(validToDate))
+           || !(toDate.isAfter(validFromDate) && toDate.isBefore(validToDate))){
             return "Time period between dates must take place within one year between 1.4. - 31.3.";
         }
+
+        // Palautetaan null, jos virheitä ei havaita.
         return null;
     }
 }

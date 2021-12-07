@@ -1,1 +1,11 @@
-# VismaCodingTask
+# Visma tehtävä
+## Toteutus ja sen ymmärtäminen
+Kirjoitin ohjeistuksessa pyydetyn HolidayPlanner-luokan, jonka countHolidayDays-metodi ottaa String-parametreina kaksi päivämäärää, muodossa d.m.YYYY, tarkistaa annettujen päivämäärien oikean muodon ja päivämäärien sekä aikavälin vastaavan vaadittuja määrityksiä. Päivämäärien ja aikavälin ollessa ok palauttaa metodi kokonaislukuna aikavälin loman pitämiseksi vaaditun lomapäivien määrän. Käsitin ohjeistuksen niin, että tarkoituksena on tehdä ainoastaan luokka, eikä mitään muuta toteutusta sen ympärille, eli mitään ajettavaa main-luokkaa ei toteutuksen yhteydessä ole.
+
+## Haasteet
+Suurimpana haasteena toteutuksessa oli kaikkien vaatimusten tarkistus, joka vaati hieman enemmän pohtimista. 
+
+## Jatkokehitys
+Suurin jatkokehityksen kohde toteutuksessa olisi kansallisten vapaapäivien käsittelijän erottaminen omaksi apuluokakseen, jonka ainoa tehtävä olisi kasata ja palauttaa lista kansallisista vapaapäivistä. Luokan pitäisi myös pystyä ottamaan vastaan esimerkiksi halutun maan tunnus String-parametrina, jotta oikean maan vapaapäivien haku olisi mahdollista. Vapaapäivien listat voitaisiin sisällyttää itse luokkaan, jolloin niiden päivittäminen/lisääminen vaatisi muutoksia koodiin. Jos taas halutaan välttää työläs koodin muokkaaminen aina uusia listoja lisätessä/vanhoja muokatessa, voitaisiin vapaapäivät kasata tietokantaan, josta luokka kävisi hakemassa ne suoraan käyttäen parametrina annettua maan tunnusta. Vielä parempi olisi, jos kannan eteen tehtäisiin api ja listat voitaisiin kysellä suoraan api-kyselyillä tietokantahakujen sijaan. Tämän lisäksi olisi varmasti hyödyllistä, jos apuluokka kykenisi hakemaan kansalliset vapaapäivät dynaamisesti valitun aikavälin vuoden mukaan. Toteutus voisi olla saman tyylinen, kuin tekemäni luokan validoinnin osuus, jossa tarkistetaan lomapäivien aikavälin sijoittuvan yhden lomavuoden sisään.
+
+Toinen kehityskohde olisi virheiden käsittelyn parantaminen. Nyt toteutus tulostaa virheen suoraan konsoliin ja palauttaa metodista arvon null lomapäivien määrän sijaan. Etenkin, jos luokkaa halutaan käyttää esimerkiksi käyttöliittymän yhteydessä, olisi virhesanoma hyvä saada käyttäjän näkyville käyttöliittymässä konsolin puolelle tulostamisen sijaan.
